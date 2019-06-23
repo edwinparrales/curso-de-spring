@@ -1,13 +1,15 @@
-package com.parrales.project.models.dao;
+package com.parrales.project.models.services;
 
 import java.util.List;
 
 import com.parrales.project.models.entity.Cliente;
 
-public interface IClienteDao {
+public interface IClienteService {
+	
 	
 	public List<Cliente> findAll();
 	public void save(Cliente cliente);
 	public Cliente finOne(Long id);
 	public void delete(long id);
+
 }

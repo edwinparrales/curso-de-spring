@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,19 +14,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
-import com.parrales.project.models.dao.IClienteDao;
 import com.parrales.project.models.entity.Cliente;
+import com.parrales.project.models.services.IClienteService;
 
 @Controller
 //@Qualifier("ClienteDaoJpa") em caso que varias clases implemente la misma interfaz
-@SessionAttributes("cleinte")
+@SessionAttributes("cliente")
 public class ClienteController {
 	@Autowired
-	private IClienteDao clienteDao;
+	private IClienteService clienteService;
 	@RequestMapping(value ="/listar",method=RequestMethod.GET)
 	public String listar(Model model) {
 		model.addAttribute("titulo","Listado de clientes");
-		model.addAttribute("clientes",clienteDao.findAll());
+		model.addAttribute("clientes",clienteService.findAll());
 		
 		return "listar";
 	}
@@ -46,7 +45,7 @@ public class ClienteController {
 	public String editar(@PathVariable(value = "id") Long id, Map<String,Object> model) {		
 		Cliente cliente = null;
 		if(id>0) {
-			cliente= clienteDao.finOne(id);
+			cliente= clienteService.finOne(id);
 		}else {
 			return "redirec:/listar";
 		}
@@ -66,9 +65,18 @@ public class ClienteController {
 			return "form";
 		}
 		
-		clienteDao.save(cliente);
+		clienteService.save(cliente);
 		seStatus.setComplete();
 		return "redirect:listar";
+	}
+	
+	@RequestMapping(value = "/eliminar/{id}")
+	public String eliminar(@PathVariable(value = "id") Long id) {
+		if(id>0) {
+			clienteService.delete(id);
+		}
+		
+		return "redirect:/listar";
 	}
 	
 
